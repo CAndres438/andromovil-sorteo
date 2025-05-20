@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <circle cx="100" cy="100" r="95" fill="#c3dafe" stroke="#3b82f6" stroke-width="10"/>
+  <path d="M100 40 L130 120 H70 Z" fill="#1e3a8a"/> <!-- Letra A -->
+  <rect x="80" y="120" width="40" height="20" rx="5" fill="#1e40af"/> <!-- Base como auto -->
+  <circle cx="90" cy="145" r="5" fill="#1e3a8a"/>
+  <circle cx="110" cy="145" r="5" fill="#1e3a8a"/>
+</svg>
