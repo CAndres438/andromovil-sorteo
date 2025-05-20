@@ -1,38 +1,50 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ContestController;
+use App\Exports\ClientsExport;
+use Maatwebsite\Excel\Facades\Excel;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+Route::get('/', fn() => Inertia::render('ContestForm'));
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware(['auth', 'verified'])->get('/dashboard', fn() =>
+    auth()->user()?->is_admin ? Inertia::render('Admin/ChooseWinner') : abort(403)
+)->name('dashboard');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/admin/choose-winner', fn() =>
+        auth()->user()?->is_admin ? Inertia::render('Admin/ChooseWinner') : abort(403)
+    )->name('admin.choose.winner');
+
+    Route::get('/admin/clients', fn() =>
+        auth()->user()?->is_admin ? Inertia::render('Admin/Clients') : abort(403)
+    )->name('admin.clients');
+
+    Route::get('/web/clients/export', fn() =>
+        auth()->user()?->is_admin ? Excel::download(new ClientsExport, 'participantes.xlsx') : abort(403)
+    );
+});
+
+
+Route::middleware('auth')->group(function () {
+    Route::post('/web/contest/winner', [ContestController::class, 'chooseWinner']);
+    Route::get('/web/contest/clients', [ContestController::class, 'getClients']);
+    Route::get('/web/contest/count', [ContestController::class, 'count']);
+});
+
+
+
 
 require __DIR__.'/auth.php';
