@@ -49,7 +49,7 @@ Incluye autenticación de administrador, selección aleatoria de ganadores, expo
     - Checkbox de Habeas Data obligatorio
 
 ### 🔐 Autenticación de administrador
-- Ruta: `https://andromovil-app-ccd90717ed2b.herokuapp.com/login`
+- Ruta: `/login`
 - Login exclusivo para admin
 - Protegido con middleware Sanctum
 
